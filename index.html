@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de traslados</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#14283c">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<header>
+  <h1>Calculadora de traslados</h1>
+  <nav>
+    <button data-tab="calc" class="on">Calculadora</button>
+    <button data-tab="params">Parámetros</button>
+    <button data-tab="hist">Historial</button>
+  </nav>
+</header>
+<main>
+<section id="calc">
+  <div class="cols">
+    <div class="panel">
+      <div class="field"><label>Origen<div class="ac"><input id="origen" autocomplete="off" placeholder="Dirección de inicio"><ul></ul></div></label>
+        <button type="button" data-v="origen">Verificar dirección</button></div>
+      <div class="field"><label>Destino<div class="ac"><input id="destino" autocomplete="off" placeholder="Dirección de llegada"><ul></ul></div></label>
+        <button type="button" data-v="destino">Verificar dirección</button></div>
+      <div class="row">
+        <button id="btnRuta" class="primary">Calcular ruta</button>
+        <a id="verMapa" target="_blank" rel="noopener" hidden>Ver en Google Maps</a>
+      </div>
+      <p id="msg" role="status"></p>
+      <div class="grid2">
+        <label>Distancia (km)<input id="km" type="number" step="0.1" min="0"></label>
+        <label>Tiempo (min)<input id="minutos" type="number" step="1" min="0"></label>
+        <label>Peajes (S/)<input id="peaje" type="number" step="0.1" min="0"></label>
+        <label>Estacionamiento / cochera (S/)<input id="cochera" type="number" step="0.1" min="0"></label>
+        <label>Otros (S/)<input id="otros" type="number" step="0.1" min="0"></label>
+        <label class="chk"><input id="idaVuelta" type="checkbox"> Cobrar ida y vuelta</label>
+      </div>
+      <label>Descripción del viaje<input id="desc" placeholder="Ej.: Traslado a obra, Santa María"></label>
+    </div>
+    <div class="panel result">
+      <p class="lbl">Precio a cobrar (incluye IGV)</p>
+      <p id="precio" class="big">S/ 0.00</p>
+      <dl id="desglose"></dl>
+      <button id="btnGuardar">Guardar en historial</button>
+    </div>
+  </div>
+</section>
+
+<section id="params" hidden>
+  <div class="panel">
+    <h2>Servicio de mapas</h2>
+    <label>Proveedor<select id="prov"><option value="ors">OpenRouteService (gratis, sin tarjeta)</option><option value="google">Google Maps</option></select></label>
+    <label>API key de OpenRouteService<input id="orskey" type="password" autocomplete="off"></label>
+    <label>API key de Google Maps<input id="apikey" type="password" placeholder="AIza..." autocomplete="off"></label>
+    <p class="hint">Las claves se guardan solo en este navegador. Mira el README para obtenerlas.</p>
+  </div>
+  <div id="form"></div>
+  <div class="panel">
+    <h2>Costos variables por kilómetro</h2>
+    <p class="hint">Cada fila cuesta (costo × factor ÷ km) soles por kilómetro. Marca solo los que quieres incluir.</p>
+    <div class="scroll"><table id="vars"></table></div>
+    <button id="addVar">Agregar costo</button>
+  </div>
+  <div class="panel">
+    <dl id="resumen"></dl>
+    <div class="row">
+      <button id="btnExport">Exportar respaldo</button>
+      <label class="file">Importar respaldo<input id="btnImport" type="file" accept=".json" hidden></label>
+      <button id="btnReset" class="danger">Restaurar valores del Excel</button>
+    </div>
+  </div>
+</section>
+
+<section id="hist" hidden>
+  <div class="panel">
+    <div class="scroll"><table id="tabHist"></table></div>
+    <p id="vacio" class="hint">Aún no hay viajes guardados. Calcula uno y pulsa “Guardar en historial”.</p>
+    <button id="btnCsv">Descargar CSV</button>
+    <button id="btnLimpiar" class="danger">Borrar historial</button>
+  </div>
+</section>
+</main>
+<dialog id="dlgMapa">
+  <div class="dh"><b id="mTitulo"></b><button id="mCerrar" type="button" aria-label="Cerrar">✕</button></div>
+  <p id="mInfo" class="hint"></p>
+  <div id="mapa"></div>
+  <div class="row"><button id="mOk" type="button" class="primary" disabled>Confirmar este punto y calcular</button><span id="mLabel" class="hint"></span></div>
+</dialog>
+<script src="calc.js"></script>
+<script src="geo.js"></script>
+<script src="mapa.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
