@@ -19,11 +19,17 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
 // ---------- Calculadora ----------
 const ids = ['km', 'minutos', 'peaje', 'cochera', 'otros'];
 $('peaje').value = cfg.peaje; $('cochera').value = 0; $('otros').value = 0;
-const trip = () => ({ ...Object.fromEntries(ids.map(i => [i, $(i).value])), km: $('km').value, idaVuelta: $('idaVuelta').checked });
+const toMin = v => $('unidad').value === 'h' ? (parseFloat(v) || 0) * 60 : v; // el motor trabaja en minutos
+const trip = () => ({ ...Object.fromEntries(ids.map(i => [i, $(i).value])), minutos: toMin($('minutos').value), idaVuelta: $('idaVuelta').checked });
+$('unidad').onchange = () => { // convierte el valor mostrado a la nueva unidad y recuerda la elección
+  const u = $('unidad').value, v = parseFloat($('minutos').value);
+  if (!isNaN(v)) $('minutos').value = u === 'h' ? +(v / 60).toFixed(2) : Math.round(v * 60);
+  $('minutos').step = u === 'h' ? '0.01' : '1'; cfg.unidadTiempo = u; save(); recalc();
+};
 function recalc() {
   const t = trip(); last = { t, r: calcular(cfg, t) }; const r = last.r;
   $('precio').textContent = S(r.precio);
-  const rows = [['Distancia cobrada', r.km.toFixed(1) + ' km'], ['Tiempo cobrado', r.horas.toFixed(2) + ' h'],
+  const rows = [['Distancia cobrada', r.km.toFixed(1) + ' km'], ['Tiempo cobrado', r.horas.toFixed(2) + ' h (' + Math.round(r.horas * 60) + ' min)'],
     ['Costo fijo (tiempo)', S(r.fijo)], ['Costo variable (km)', S(r.variable)], ['Peajes, cochera y otros', S(r.extras)],
     ['Costo del viaje', S(r.costo)], ['Con IGV (' + (cfg.igv * 100).toFixed(0) + '%)', S(r.conIgv)],
     ['Margen (' + (cfg.margen * 100).toFixed(1) + '%)', S(r.precio - r.conIgv)]];
@@ -72,7 +78,7 @@ async function ruta() {
       r = await GEO.googleRuta(gp('origen'), gp('destino'), key(), f);
       url = `https://www.google.com/maps/dir/?api=1&origin=${q(gp('origen'))}&destination=${q(gp('destino'))}`;
     }
-    $('km').value = r.km.toFixed(1); $('minutos').value = Math.round(r.min);
+    $('km').value = r.km.toFixed(1); $('minutos').value = $('unidad').value === 'h' ? (r.min / 60).toFixed(2) : Math.round(r.min);
     $('verMapa').href = url; $('verMapa').hidden = false;
     msg('Ruta calculada. Puedes ajustar km y minutos.' + nota); recalc();
   } catch (e) { msg('Error de mapas: ' + e.message, true); }
@@ -165,5 +171,5 @@ $('btnCsv').onclick = () => download('historial-traslados.csv', '\ufeff' + ['fec
   ...hist.map(h => [h.fecha, h.desc, h.origen, h.destino, h.km, h.horas, h.peaje, h.otros, h.precio].map(x => `"${String(x ?? '').replace(/"/g, '""')}"`).join(','))].join('\n'), 'text/csv');
 $('btnLimpiar').onclick = () => { if (confirm('¿Borrar todo el historial?')) { hist = []; localStorage.setItem(KEY_HIST, '[]'); renderHist(); } };
 
-function init() { fillForm(); renderVars(); resumen(); recalc(); }
+function init() { $('unidad').value = cfg.unidadTiempo || 'min'; $('minutos').step = $('unidad').value === 'h' ? '0.01' : '1'; fillForm(); renderVars(); resumen(); recalc(); }
 init();

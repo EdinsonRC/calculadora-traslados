@@ -3,7 +3,7 @@ const DEFAULTS = { // Valores de ejemplo. Los reales se cargan en Parámetros o 
   sueldo: 1500, carga: 0.5, horasMes: 168,
   galonPrecio: 15, galonSem: 3, semMes: 4, lavado: 20, lavadoSem: 1,
   glp: 5, rend: 40,
-  igv: 0.18, margen: 0.1, peaje: 0, cochera: 0, minExtra: 0,
+  unidadTiempo: 'min', igv: 0.18, margen: 0.1, peaje: 0, cochera: 0, minExtra: 0,
   variables: [ // costo = S/ por cada "km" recorridos; f = factor; on = entra al cálculo
     { n: 'Mantenimiento (5 000 km)', km: 5000, costo: 0, f: 1, on: true },
     { n: 'Mantenimiento (70 000 km)', km: 70000, costo: 0, f: 1, on: true },

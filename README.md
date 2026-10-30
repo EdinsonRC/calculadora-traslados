@@ -76,6 +76,7 @@ Precio = redondear(costo × (1 + IGV), 2) × (1 + margen)
 
 ## Cómo se calcula cada dato del viaje
 
+- **Unidad del tiempo:** junto al campo *Tiempo* eliges **minutos** u **horas** (el Excel usa horas). Al cambiarla, el valor escrito se convierte solo, y la calculadora recuerda tu elección. El desglose muestra siempre el tiempo cobrado en horas y minutos.
 - **Distancia y tiempo:** los trae el proveedor elegido (Google considera el tráfico actual; OpenRouteService no). Puedes corregirlos a mano antes de calcular.
 - **Minutos extra por viaje** (Parámetros): suma espera o gestión al tiempo de Google (en el Excel los tiempos eran estimados manuales).
 - **Ida y vuelta:** duplica km y tiempo. Por defecto va desactivado, porque tus consideraciones indican que no se cobra el retorno a oficina.
